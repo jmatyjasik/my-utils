@@ -1,15 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { BloodPressureService } from './blood-pressure.service';
-import { CreateBloodPressureDto } from './dto/create-blood-pressure.dto';
-import { UpdateBloodPressureDto } from './dto/update-blood-pressure.dto';
+import { CreateBloodPressureEntryDto } from './dto/create-blood-pressure.dto';
 
 @Controller('blood-pressure')
 export class BloodPressureController {
   constructor(private readonly bloodPressureService: BloodPressureService) {}
 
   @Post()
-  create(@Body() createBloodPressureDto: CreateBloodPressureDto) {
-    return this.bloodPressureService.create(createBloodPressureDto);
+  create(@Body() createBloodPressureDto: CreateBloodPressureEntryDto) {
+    return this.bloodPressureService.createEntry(createBloodPressureDto);
   }
 
   @Get()
@@ -19,16 +18,11 @@ export class BloodPressureController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.bloodPressureService.findOne(+id);
+    return this.bloodPressureService.findOne(id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBloodPressureDto: UpdateBloodPressureDto) {
-    return this.bloodPressureService.update(+id, updateBloodPressureDto);
-  }
-
+  
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.bloodPressureService.remove(+id);
+    return this.bloodPressureService.delete(id);
   }
 }

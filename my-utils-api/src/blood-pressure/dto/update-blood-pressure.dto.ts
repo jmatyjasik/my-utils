@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateBloodPressureDto } from './create-blood-pressure.dto';
+import { CreateBloodPressureEntryDto } from './create-blood-pressure.dto';
 
-export class UpdateBloodPressureDto extends PartialType(CreateBloodPressureDto) {}
+export class UpdateBloodPressureDto extends PartialType(CreateBloodPressureEntryDto) {}

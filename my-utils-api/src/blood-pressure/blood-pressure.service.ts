@@ -1,26 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { CreateBloodPressureDto } from './dto/create-blood-pressure.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { CreateBloodPressureEntryDto } from './dto/create-blood-pressure.dto';
 import { UpdateBloodPressureDto } from './dto/update-blood-pressure.dto';
+import { BloodPressureEntry } from './entities/blood-pressure.entity';
 
 @Injectable()
 export class BloodPressureService {
-  create(createBloodPressureDto: CreateBloodPressureDto) {
-    return 'This action adds a new bloodPressure';
+
+  constructor(
+    @Inject('BLOOD_PRESSURE_ENTRY_MODEL')
+    private bloodPressureEntryModel: Model<BloodPressureEntry>
+  ) {}
+
+  createEntry(createBloodPressureDto: CreateBloodPressureEntryDto): Promise<BloodPressureEntry> {
+      const createdEntry = new this.bloodPressureEntryModel(createBloodPressureDto);
+      return createdEntry.save();
   }
 
-  findAll() {
-    return `This action returns all bloodPressure`;
+  findAll(): Promise<BloodPressureEntry[]> {
+    return this.bloodPressureEntryModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bloodPressure`;
+  findOne(id: string): Promise<BloodPressureEntry> {
+    return this.bloodPressureEntryModel.findById(id).exec();
   }
 
-  update(id: number, updateBloodPressureDto: UpdateBloodPressureDto) {
-    return `This action updates a #${id} bloodPressure`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} bloodPressure`;
+  delete(id: string): Promise<BloodPressureEntry> {
+    return this.bloodPressureEntryModel.findByIdAndDelete(id).exec();
   }
 }
