@@ -1,0 +1,16 @@
+.left {
+    width: 60%; float:left
+}
+
+.right {
+    width: 40%; float:right; text-align: left;
+}
+
+.row {
+    width: 100%;
+}
+
+.title {
+    text-align: center;
+    text-decoration: double;
+}

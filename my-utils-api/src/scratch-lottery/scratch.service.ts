@@ -89,9 +89,7 @@ export class ScratchService {
 
                 const winingSum = l.result.prizes.reduce((total, prize) => total + prize.quantity, 0);
                 const winingLeftSum = l.result.prizes.reduce((total, prize) => total + prize.quantityLeft, 0);
-
-                const sold = (winingSum - winingLeftSum)/winingSum + 1;
-                const circulationAdjusted = l.result.circulation * sold;
+                const circulationAdjusted = l.result.circulation * winingLeftSum / winingSum;
                 const expected = calculateExpectedValue(l.result.prizes, l.result.circulation, circulationAdjusted);
 
                 return {
@@ -107,6 +105,8 @@ export class ScratchService {
                     circulation: l.result.circulation,
                     circulationAdj: circulationAdjusted,
                     prizes: mapPrizes(l.result.prizes, l.result.circulation, circulationAdjusted),
+                    winningSum: winingSum,
+                    winingLeftSum: winingLeftSum
                 }
 
             });
