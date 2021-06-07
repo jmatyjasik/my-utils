@@ -1,4 +1,5 @@
-import { Controller, Get, HttpService, Injectable } from '@nestjs/common';
+import { Controller, Get, HttpService, Injectable, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import * as fs from 'fs';
 import { GetAllLotteriesResponse } from './model';
 import { ScratchService } from './scratch.service';
@@ -11,6 +12,7 @@ export class ScratchController {
     }
 
     @Get('healthcheck')
+    @UseGuards(AuthGuard('api-key'))
     healthCheck() {
         return {
             health: true
