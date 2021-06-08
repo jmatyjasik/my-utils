@@ -20,12 +20,14 @@ export class ScratchController {
     }
 
     @Get('dump')
+    @UseGuards(AuthGuard('api-key'))
     async dumpLotteries() {
        this.scratchService.dumpAllLotteries();
        return `Dumped ${new Date()}`;
     }
 
     @Get('getAll')
+    @UseGuards(AuthGuard('api-key'))
     async getAllLotteries() {
       return this.scratchService.getAllLotteries();
     }
