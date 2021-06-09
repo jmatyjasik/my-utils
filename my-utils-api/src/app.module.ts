@@ -6,9 +6,10 @@ import { EntriesModule } from './entries/entries.module';
 import { ScratchLotteryModule } from './scratch-lottery/scratch-lottery.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { HealthcheckModule } from './heathcheck/healthcheck.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ScratchLotteryModule, DatabaseModule, EntriesModule, AuthModule],
+  imports: [ConfigModule.forRoot(), ScratchLotteryModule, DatabaseModule, EntriesModule, AuthModule, HealthcheckModule],
   controllers: [AppController],
   providers: [AppService],
 })
