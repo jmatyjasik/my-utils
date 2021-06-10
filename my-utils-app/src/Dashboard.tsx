@@ -3,33 +3,30 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import SyncProblem from '@material-ui/icons/SyncProblem';
 
 import '@fontsource/roboto';
+import { useState, useEffect } from 'react';
+import { Sync } from '@material-ui/icons';
 
 const drawerWidth = 240;
 
@@ -115,6 +112,8 @@ const useStyles = makeStyles((theme) => ({
 export const Dashboard = () => {
     const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [isConnected, setIsConnected] = useState(false);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -123,6 +122,22 @@ export const Dashboard = () => {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  useEffect(() => {
+    setInterval(async () => {
+      const res = await fetch('healthcheck');
+      const blocks = await res.json();
+      setIsConnected(blocks.health);
+    }, 5000);
+  }, []);
+
+  const renderConnectionStatus = ()=>{
+    if(isConnected) {
+      return <Sync></Sync>
+    }
+    else {
+      return <SyncProblem/>
+    }
+  }
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -138,8 +153,9 @@ export const Dashboard = () => {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            Dashboard 
           </Typography>
+          {renderConnectionStatus()}
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
