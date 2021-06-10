@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Lottery } from './model';
 import './Gambling.css';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'node:constants';
 
 export const Gambling = () => {
     const [game, setGame] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-          const result = await fetch('http://localhost:3001/scratch/getAll');
+          const result = await fetch(`http://${process.env.REACT_APP_HOSTNAME}/scratch/getAll`, {
+            method: "GET",
+            headers: {
+              "X-API-KEY": process.env.REACT_APP_APIKEY!
+            }
+          } );
           const res = await result.json();
             setGame(res);
         };
