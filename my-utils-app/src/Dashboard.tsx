@@ -14,19 +14,15 @@ import Grid from '@material-ui/core/Grid';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
 import SyncProblem from '@material-ui/icons/SyncProblem';
-
+import { BrowserRouter, Link as RouterLink } from 'react-router-dom';
 import '@fontsource/roboto';
 import { useState, useEffect } from 'react';
 import { Sync } from '@material-ui/icons';
+import { Routing } from './Routing';
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { BrowserRouter as Router } from "react-router-dom";
+import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const drawerWidth = 240;
 
@@ -124,7 +120,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     setInterval(async () => {
-      const res = await fetch('healthcheck');
+      const res = await fetch(`${process.env.REACT_APP_HOSTNAME}/healthcheck`);
       const blocks = await res.json();
       setIsConnected(blocks.health);
     }, 5000);
@@ -140,6 +136,7 @@ export const Dashboard = () => {
   }
   return (
     <div className={classes.root}>
+      <BrowserRouter>
       <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
@@ -177,36 +174,21 @@ export const Dashboard = () => {
         </div>
         <Divider></Divider>
         <div>
-    <ListItem button>
-      <ListItemIcon>
+
+        <ListItem button component={RouterLink} to='/'>
+            <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
+
+        <ListItem button component={RouterLink} to='/journal'>
+        <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Orders" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Customers" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
-    </ListItem>
+      <ListItemText primary="Dziennik" />
+        </ListItem>
+   
   </div>
 
       </Drawer>
@@ -214,11 +196,12 @@ export const Dashboard = () => {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-         
+            <Routing></Routing>
           </Grid>
         
         </Container>
       </main>
+      </BrowserRouter>
     </div>
   );
 };

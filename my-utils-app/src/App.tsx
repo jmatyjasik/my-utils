@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
-import { BloodPressure } from './components/bloodPressure/BloodPressure';
-import { Gambling } from './components/gambling/Gambling';
+import { BloodPressure } from './components_old/bloodPressure/BloodPressure';
+import { Gambling } from './components_old/gambling/Gambling';
 import { Dashboard } from './Dashboard';
 
 function App() {
