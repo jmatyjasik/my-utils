@@ -7,8 +7,10 @@ export type JournalType = {
     columns: JournalColumnDef[]
 }
 
-export type JournalColumnDef = {
-    code: string;
-    header: string;
-    type: 'string'
+export class JournalColumnDef {
+    constructor(
+        public readonly key: string,
+        public readonly header: string,
+        public readonly type: 'string' = 'string'
+    ) {}
 }

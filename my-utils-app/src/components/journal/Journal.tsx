@@ -1,9 +1,11 @@
-import { Typography, Button, makeStyles, TextField, CardHeaderProps, CardHeader } from "@material-ui/core";
-import { useEffect, useState } from "react";
-import { JournalType } from "./journalType";
+import { Typography, Button, makeStyles, TextField, CardHeader, List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { JournalColumnDef, JournalType } from "./journalType";
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import SaveIcon from '@material-ui/icons/Save';
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 
 export const Journal = () => {
 
@@ -39,8 +41,12 @@ export const Journal = () => {
   const classes = useStyles();
 
   const [journals, setJournals] = useState<JournalType[] | []>([]);
+  
   const [journalKey, setJournalKey] = useState('');
   const [journalName, setJournalName] = useState('');
+  const [journalColums, setJournalColumns] = useState<JournalColumnDef[] | []>([]);
+  const [colKey, setColKey] = useState('');
+  const [colHeader, setColHeader] = useState('');
   const [refresh, setRefresh] = useState(false);
 
   const convertToJournal = (responseJson: any): JournalType => {
@@ -51,7 +57,7 @@ export const Journal = () => {
       updatedAt: responseJson.updatedAt,
       key: journalData.key,
       name: journalData.name,
-      columns: []
+      columns: journalData.columns
     }
   }
 
@@ -76,7 +82,8 @@ export const Journal = () => {
     event.preventDefault();
     const data = {
       key: journalKey,
-      name: journalName
+      name: journalName,
+      columns: journalColums
     } ;
     const fetchBody = {
       data: JSON.stringify(data)
@@ -100,6 +107,7 @@ export const Journal = () => {
         setJournals(newJ);
         setJournalKey('');
         setJournalName('');
+        setJournalColumns([]);
     })
   }
 
@@ -123,14 +131,45 @@ export const Journal = () => {
           <div>
             <TextField id="standard-required" className={classes.field} label="Klucz" value={journalKey} onChange={e => setJournalKey(e.target.value)} />
             <TextField id="standard-disabled" className={classes.field} label="Nazwa" value={journalName} onChange={e => setJournalName(e.target.value)} />
-            <Button type="submit">Zapisz</Button>
           </div>
+          <div>
+            <List>
+              {journalColums.map((colDef: JournalColumnDef) => <ListItem> 
+                <ListItemIcon><ViewColumnIcon/></ListItemIcon>
+                <ListItemText
+                    primary={colDef.header}
+                    secondary={colDef.key}
+                  /></ListItem>)}
+            </List>
+          </div>
+          <div>
+            <TextField id="standard-required" className={classes.field} label="Nazwa kolumny" value={colHeader} onChange={e => setColHeader(e.target.value)} />
+            <TextField id="standard-disabled" className={classes.field} label="Klucz" value={colKey} onChange={e => setColKey(e.target.value)} />
+            <Button variant="outlined"
+              color="secondary"
+              onClick={()=>{
+                const newCol = new JournalColumnDef(colKey, colHeader);
+                setJournalColumns([...journalColums, newCol]);
+                setColKey('');
+                setColHeader('');
+              }} > 
+              Dodaj
+            </Button>
+          </div>
+
+          <div><Button 
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<SaveIcon />}
+          type="submit">Zapisz</Button></div>
+
         </form>
       </CardContent>
     </Card>
 
     <div className={classes.panel} >
-      {journals.map(j =>
+      {journals.map( (j: JournalType) =>
         <Card className={classes.tail} key={j.id}>
           <CardHeader title={j.name} subheader={j.createdAt}></CardHeader>
           <CardContent>
