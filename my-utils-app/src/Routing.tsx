@@ -1,9 +1,7 @@
-import React from "react";
 import { Home } from "./components/Home";
 import { Journal } from "./components/journal/Journal";
 
-import { BrowserRouter, Route } from "react-router-dom";
-import { withRouter } from 'react-router-dom';
+import { Route } from "react-router-dom";
 import { Container } from "@material-ui/core";
 
 

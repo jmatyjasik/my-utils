@@ -21,7 +21,6 @@ import { useState, useEffect } from 'react';
 import { Sync } from '@material-ui/icons';
 import { Routing } from './Routing';
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { BrowserRouter as Router } from "react-router-dom";
 import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const drawerWidth = 240;
@@ -116,7 +115,6 @@ export const Dashboard = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   useEffect(() => {
     setInterval(async () => {
