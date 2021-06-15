@@ -1,4 +1,4 @@
-import { Typography, Button, makeStyles, TextField, CardHeader, List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
+import { Typography, Button, makeStyles, TextField, CardHeader, List, ListItem, ListItemText, ListItemIcon, Select } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { JournalColumnDef, JournalType } from "./journalType";
 import Card from '@material-ui/core/Card';
@@ -6,6 +6,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import SaveIcon from '@material-ui/icons/Save';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
+import { DataGrid } from '@material-ui/data-grid';
 
 export const Journal = () => {
 
@@ -36,7 +37,7 @@ export const Journal = () => {
     field: {
       marginRight: 20
     },
-    panel: {}
+    panel: { width: '100%' }
   });
   const classes = useStyles();
 
@@ -48,6 +49,8 @@ export const Journal = () => {
   const [colKey, setColKey] = useState('');
   const [colHeader, setColHeader] = useState('');
   const [refresh, setRefresh] = useState(false);
+
+  const [selectedJournal, setSelectedJournal] = useState<JournalType|undefined>(undefined);
 
   const convertToJournal = (responseJson: any): JournalType => {
     const journalData = JSON.parse(responseJson.data) as JournalType;
@@ -122,8 +125,32 @@ export const Journal = () => {
     .then(response => setRefresh(!refresh));
   }
 
+  const renderDataGrid = () => {
+      if(!selectedJournal){
+        return (<div>Empty</div>);
+      }
+
+      const cols = selectedJournal.columns.map(c => ({field: c.key, headerName: c.header, width:130}));
+
+      return  (<DataGrid rows={[]}  columns={cols} pageSize={5} checkboxSelection />);
+  }
+
   return (<>
-    <h1>Dziennik</h1>
+    <h1>Dziennik - {selectedJournal?.name ?? '<wybierz>'}</h1>
+    <Select
+          native
+          value={selectedJournal?.id}
+          onChange={(ev)=> setSelectedJournal(journals.find(i=>i.id === ev.target.value))}
+          label="Dziennik"
+          inputProps={{
+            name: 'age',
+            id: 'outlined-age-native-simple',
+          }}
+        >
+          <option aria-label="None" value="" />
+          {journals.map(j =>  <option value={j.id}>{j.name}</option>)}
+       
+        </Select>
 
     <Card className={classes.root}>
       <CardContent>
@@ -168,22 +195,30 @@ export const Journal = () => {
       </CardContent>
     </Card>
 
-    <div className={classes.panel} >
+    <div  >
       {journals.map( (j: JournalType) =>
         <Card className={classes.tail} key={j.id}>
           <CardHeader title={j.name} subheader={j.createdAt}></CardHeader>
           <CardContent>
          
             <Typography variant="body2" component="p">
-              Klucz: {j.key}
+              Kolumny: ({j.columns.map(i=>i.header).join(', ')})
             </Typography>
           </CardContent>
         <CardActions>
         <Button size="small" color="primary" onClick={()=>handleRemoveJournal(j.id)}>
           Usuń
         </Button>
+        <Button size="small" color="primary" onClick={()=>setSelectedJournal(j)}>
+          Pokaż
+        </Button>
         </CardActions>
         </Card>)}</div>
+
+
+        <div className={classes.panel}>
+          {renderDataGrid()}
+        </div>
   </>
   );
 }
