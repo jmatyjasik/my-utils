@@ -1,4 +1,4 @@
-import { Typography, Button, makeStyles, TextField, CardHeader, List, ListItem, ListItemText, ListItemIcon, Select } from "@material-ui/core";
+import { Typography, Button, makeStyles, TextField, CardHeader, List, ListItem, ListItemText, ListItemIcon, Select, Container } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { JournalColumnDef, JournalType } from "./journalType";
 import Card from '@material-ui/core/Card';
@@ -7,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import SaveIcon from '@material-ui/icons/Save';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import { DataGrid } from '@material-ui/data-grid';
+import { Grid } from '@material-ui/core';
 
 export const Journal = () => {
 
@@ -49,6 +50,9 @@ export const Journal = () => {
   const [colKey, setColKey] = useState('');
   const [colHeader, setColHeader] = useState('');
   const [refresh, setRefresh] = useState(false);
+const [addJournalMode, setAddJournalMode] = useState(false);
+const [showAllJournal, setShowAllJournal] = useState(false)
+
 
   const [selectedJournal, setSelectedJournal] = useState<JournalType|undefined>(undefined);
 
@@ -111,6 +115,7 @@ export const Journal = () => {
         setJournalKey('');
         setJournalName('');
         setJournalColumns([]);
+        setAddJournalMode(false)
     })
   }
 
@@ -136,8 +141,12 @@ export const Journal = () => {
   }
 
   return (<>
-    <h1>Dziennik - {selectedJournal?.name ?? '<wybierz>'}</h1>
-    <Select
+   <Grid container spacing={3}>
+        <Grid item xs={4}>
+          <h1>Dziennik - {selectedJournal?.name ?? '<wybierz>'}</h1>
+        </Grid>
+        <Grid item xs={8}>
+        <Select
           native
           value={selectedJournal?.id}
           onChange={(ev)=> setSelectedJournal(journals.find(i=>i.id === ev.target.value))}
@@ -152,7 +161,13 @@ export const Journal = () => {
        
         </Select>
 
-    <Card className={classes.root}>
+        <Button onClick={()=>setAddJournalMode(true)}>Dodaj dziennik</Button>
+        <Button onClick={()=>setShowAllJournal(true)}>Pokaż wszystkir</Button>
+
+        </Grid>
+
+        <Grid item xs={12}>
+        {addJournalMode && <Card className={classes.root}>
       <CardContent>
         <form className={classes.root} noValidate autoComplete="off" onSubmit={handleJournalSubmit}>
           <div>
@@ -189,14 +204,16 @@ export const Journal = () => {
           color="primary"
           size="small"
           startIcon={<SaveIcon />}
-          type="submit">Zapisz</Button></div>
+          type="submit">Zapisz</Button>
+          <Button onClick={()=>setAddJournalMode(false)}>Anuluj</Button></div>
 
         </form>
       </CardContent>
-    </Card>
+    </Card>}
+        </Grid>
 
-    <div  >
-      {journals.map( (j: JournalType) =>
+        {showAllJournal && <Grid item xs={12}>
+        {journals.map( (j: JournalType) =>
         <Card className={classes.tail} key={j.id}>
           <CardHeader title={j.name} subheader={j.createdAt}></CardHeader>
           <CardContent>
@@ -209,16 +226,24 @@ export const Journal = () => {
         <Button size="small" color="primary" onClick={()=>handleRemoveJournal(j.id)}>
           Usuń
         </Button>
-        <Button size="small" color="primary" onClick={()=>setSelectedJournal(j)}>
+        <Button size="small" color="primary" onClick={()=>{setSelectedJournal(j); setShowAllJournal(false)}}>
           Pokaż
         </Button>
         </CardActions>
-        </Card>)}</div>
+        </Card>)}
+        </Grid>}
+
+        <Grid item xs={12}>{renderDataGrid()}</Grid>
+    </Grid>
+    
+  
+    
 
 
-        <div className={classes.panel}>
-          {renderDataGrid()}
-        </div>
+
+
+          
+       
   </>
   );
 }
