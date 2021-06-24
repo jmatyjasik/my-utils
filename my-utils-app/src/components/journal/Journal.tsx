@@ -8,6 +8,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import { DataGrid } from '@material-ui/data-grid';
 import { Grid } from '@material-ui/core';
+import { JournalData } from "./JournalData";
 
 export const Journal = () => {
 
@@ -135,10 +136,8 @@ const [showAllJournal, setShowAllJournal] = useState(false)
         return (<div>Empty</div>);
       }
 
-      const cols = selectedJournal.columns.map(c => ({field: c.key, headerName: c.header, width:130}));
-
-      return  (<DataGrid rows={[]}  columns={cols} pageSize={5} checkboxSelection />);
-  }
+      return (<JournalData journalType={selectedJournal}/>)
+    }
 
   return (<>
    <Grid container spacing={3}>
